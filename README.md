@@ -1,3 +1,40 @@
+Forked from [Spot Mini Mini](https://github.com/OpenQuadruped/spot_mini_mini). All I did was add [uv](https://docs.astral.sh/uv/) configuration to make it easy to set up with modern python environments. Just run `uv sync` in the local directory to get set up (on linux lol). Depends on ROS jazzy, to configure a docker environment:
+
+```sh
+docker pull osrf/ros:jazzy-desktop
+xhost +local:docker
+docker run -it \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  osrf/ros:jazzy-desktop bash
+```
+You can then `cd` into `~/` and clone this repo there. To save the state of your container, open another terminal while it's running:
+
+```sh
+docker ps -a # this will show running containers, find the current container's name
+docker pause <name of your container>
+docker commit <name of your container> dog_lmao:latest
+docker unpause <name of your container>
+```
+
+You will then need to `docker run dog_lmao:latest` instead of `osrf/ros:jazzy-desktop`.
+
+If you are on Wayland (more common in recent Linux distro releases), the desktop passthrough is a little different:
+
+```sh
+docker run -it \
+  -e DISPLAY=$DISPLAY \
+  -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
+  -e XDG_RUNTIME_DIR=/tmp \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/$WAYLAND_DISPLAY \
+  osrf/ros:jazzy-desktop bash
+```
+
+Test your setup by `cd`ing into the directory you cloned this repo to, then going to `spot_bullet/src` and running `uv run env_tester.py`. You should see a window with the robot sim in it.
+
+# Original Readme
+
 Note: development for this project was haulted in November 2020 to respect my NDA with my employer.
 
 ## Spot Mini Mini OpenAI Gym Environment
