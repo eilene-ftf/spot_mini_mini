@@ -1,6 +1,6 @@
 [project]
 name = "spot-mini-mini"
-version = "0.1.0"
+version = "0.1.2"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -11,4 +11,5 @@ dependencies = [
     "pybullet>=3.2.7",
     "setuptools==67.5",
     "six>=1.17.0",
+    "aiofiles"
 ]
