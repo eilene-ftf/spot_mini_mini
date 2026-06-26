@@ -1,6 +1,7 @@
 import socket
 import asyncio
-# import aiofiles
+import aiofiles
+import command_writer as cw
 import os
 
 DOG_HOST = "0.0.0.0"   # replace with dog/container IP
@@ -11,18 +12,27 @@ PORT_TO_DOG   = 23456     # we push Bend output to dog on this port
 # Posted by Vincent, modified by community. See post 'Timeline' for change history
 # Retrieved 2026-06-23, License - CC BY-SA 4.0
 
+TEMPLATE = dict(cw.STOP_CMD)
 
 async def handle_echo(reader, writer):
     data = await reader.read(100)
     message = data.decode()
-    message_back  = data.decode() + '-- Server received.'
     addr = writer.get_extra_info('peername')
 
     print(f"Received {message!r} from {addr!r}")
 
-    print(f"Send: {message_back!r}")
-    writer.write(message_back.encode())
-    await writer.drain()
+    new_cmd = dict(TEMPLATE)
+   
+    pairs = [tuple(kv.split(':')) for kv in message.strip.split(' ')]
+    for key, value in pairs:
+        if key in new_cmd:
+            new_cmd[key] = float(value)/1000.0
+    
+    cw.write_cmd(new_cmd)
+
+    #print(f"Send: {message_back!r}")
+    #writer.write(message_back.encode())
+    #await writer.drain()
 
     writer.close()
     await writer.wait_closed()
@@ -51,7 +61,7 @@ async def main():
     print(f'Serving 1 on {addr1}')
 
     server2 = await asyncio.start_server(
-        handle_echo, DOG_HOST, PORT_TO_DOG)
+        recieve_cmd, DOG_HOST, PORT_TO_DOG)
 
     addr2 = server2.sockets[0].getsockname()
     print(f'Serving 2 on {addr2}')
