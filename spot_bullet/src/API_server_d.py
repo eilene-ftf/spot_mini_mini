@@ -15,7 +15,7 @@ PORT_TO_DOG   = 23456     # we push Bend output to dog on this port
 TEMPLATE = dict(cw.STOP_CMD)
 
 async def recv_cmd(reader, writer):
-    data = await reader.read(100)
+    data = await reader.read(256)
     message = data.decode()
     addr = writer.get_extra_info('peername')
 
