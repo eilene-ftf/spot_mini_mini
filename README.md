@@ -1,3 +1,5 @@
+# New Stuff
+
 Forked from [Spot Mini Mini](https://github.com/OpenQuadruped/spot_mini_mini). All I did was add [uv](https://docs.astral.sh/uv/) configuration to make it easy to set up with modern python environments. Just run `uv sync` in the local directory to get set up (on linux lol). Depends on ROS jazzy, to configure a docker environment:
 
 ```sh
@@ -32,6 +34,29 @@ docker run -it \
 ```
 
 Test your setup by `cd`ing into the directory you cloned this repo to, then going to `spot_bullet/src` and running `uv run env_tester.py`. You should see a window with the robot sim in it.
+
+## For use with bactr
+
+I should probably call it something sillier, like bend-r. This is intended for use with [bactr](https://github.com/eilene-ftf/bactr), a production system written in the glorified esolang, [Bend](https://github.com/HigherOrderCO/bend), mainly so we can prove neurons can be a compile target for a conventional(ish) programming language. For use with Bend, we simplified the I/O interface for this dog, you can run everything using `start_spot_api.sh` in the root directory of this repository. However, if the bend language and your associated scripts are installed outside your docker container, and Spot is running inside of one, you will need to modify the shell command slightly:
+
+```sh
+docker run -it \
+  -p 23456:23456 \
+  -p 65432:65432 \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  osrf/ros:jazzy-desktop bash
+ ```
+
+and the Wayland one too as appropriate.
+
+Use command line option `0` if you are running bare metal or if you want your bend code to execute inside your container, outside of a container, `1` inside docker, then run the same script again with option `2` outside the container. The API is now live, you can write to `/tmp/api_inbox` and read from `/tmp/api_outbox` to interact with it. The API is still incomplete, but you can, for example:
+
+```sh
+echo "go:1 step_length:10 step_velocity:1000" > /tmp/api_inbox
+``` 
+
+and make the dog walk. The format for the API is strict: use only appropriately named slots (look in `pybullet/src`, there's a json file giving the format) with nonnegative integer values, mapped to one another by a colon, with key-value pairs delimited by a single space, all terminated by a newline character. Anything else will break.
 
 # Original Readme
 
