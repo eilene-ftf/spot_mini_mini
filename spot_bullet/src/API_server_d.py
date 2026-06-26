@@ -14,7 +14,7 @@ PORT_TO_DOG   = 23456     # we push Bend output to dog on this port
 
 TEMPLATE = dict(cw.STOP_CMD)
 
-async def handle_echo(reader, writer):
+async def recv_cmd(reader, writer):
     data = await reader.read(100)
     message = data.decode()
     addr = writer.get_extra_info('peername')
@@ -53,7 +53,7 @@ def yield_client_fn(data):
     return talk_to_client
 
 async def main():
-    dummy_data = ["hello\n", "hi\n", "how are you?\n", "quit\n"]
+    dummy_data = ["quit\n"]
     server1 = await asyncio.start_server(
         yield_client_fn(dummy_data), DOG_HOST, PORT_FROM_DOG)
 
@@ -61,7 +61,7 @@ async def main():
     print(f'Serving 1 on {addr1}')
 
     server2 = await asyncio.start_server(
-        recieve_cmd, DOG_HOST, PORT_TO_DOG)
+        recv_cmd, DOG_HOST, PORT_TO_DOG)
 
     addr2 = server2.sockets[0].getsockname()
     print(f'Serving 2 on {addr2}')
