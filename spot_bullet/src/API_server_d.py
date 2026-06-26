@@ -29,6 +29,8 @@ async def recv_cmd(reader, writer):
         if key in new_cmd:
             if key == 'go':
                 new_cmd[key] = int(value)
+            elif value == '':
+                new_cmd[key] = 0.0
             else:
                 print(f"setting {key}: {float(value)/1000.0}")
                 new_cmd[key] = float(value)/1000.0
