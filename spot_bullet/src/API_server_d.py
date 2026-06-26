@@ -29,6 +29,7 @@ async def recv_cmd(reader, writer):
             if key == 'go':
                 new_cmd[key] = int(value)
             else:
+                print(f"setting {key}: {float(value)/1000.0}")
                 new_cmd[key] = float(value)/1000.0
     
     cw.write_cmd(new_cmd)
