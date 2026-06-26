@@ -34,7 +34,7 @@ async def recv_cmd(reader, writer):
             else:
                 print(f"setting {key}: {float(value)/1000.0}")
                 new_cmd[key] = float(value)/1000.0
-    
+    print(new_cmd)    
     cw.write_cmd(new_cmd)
 
     #print(f"Send: {message_back!r}")
