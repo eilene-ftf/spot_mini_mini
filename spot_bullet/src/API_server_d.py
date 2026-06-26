@@ -24,6 +24,7 @@ async def recv_cmd(reader, writer):
     new_cmd = dict(TEMPLATE)
    
     pairs = [tuple(kv.split(':')) for kv in message.strip().split(' ')]
+    print(pairs)
     for key, value in pairs:
         if key in new_cmd:
             if key == 'go':
