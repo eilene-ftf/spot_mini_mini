@@ -23,10 +23,13 @@ async def recv_cmd(reader, writer):
 
     new_cmd = dict(TEMPLATE)
    
-    pairs = [tuple(kv.split(':')) for kv in message.strip.split(' ')]
+    pairs = [tuple(kv.split(':')) for kv in message.strip().split(' ')]
     for key, value in pairs:
         if key in new_cmd:
-            new_cmd[key] = float(value)/1000.0
+            if key == 'go':
+                new_cmd[key] = int(value)
+            else:
+                new_cmd[key] = float(value)/1000.0
     
     cw.write_cmd(new_cmd)
 
