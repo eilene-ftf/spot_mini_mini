@@ -10,6 +10,8 @@ docker run -it \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   osrf/ros:jazzy-desktop bash
 ```
+For Mac users with M-series chips, instead of the above, you will want to follow the instructions to install a ROS Jazzy image from [tatsuyai713's github](https://github.com/tatsuyai713/Development-Container-for-ROS2-on-Arm64-Mac). Follow the instructions there to run your image, clone this repo inside it and operate everything in the provided kubuntu environment.
+
 You can then `cd` into `~/` and clone this repo there. To save the state of your container, open another terminal while it's running:
 
 ```sh
